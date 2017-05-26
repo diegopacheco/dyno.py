@@ -40,19 +40,3 @@ class DynoPythonDriver:
                 self.cnn  = self.connectRedis()
             else:
                 raise Exception("MAX number of retry exceded! ")
-
-def simpleCode(r):
-    result = r.get('foo')
-    print result
-
-def main():
-    driver = DynoPythonDriver('127.0.0.1|127.0.0.1|127.0.0.1')
-    while(True):
-        try:
-            driver.runWithFallback(simpleCode)
-            time.sleep(1)
-        except Exception as e:
-            print "Abording program... Error: " + str(e)
-            break
-
-main()
