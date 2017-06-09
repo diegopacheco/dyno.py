@@ -17,9 +17,10 @@ class DynoPythonDriver:
         self.seeds = seeds.split('|')
         self.cnn   = self.connectRedis()
         self.retryCount = 0
+        self.timeout = 5
 
     def connectRedis(self):
-        return redis.StrictRedis(host=self.seeds[0], port=self.redisPort)
+        return redis.StrictRedis(host=self.seeds[0], port=self.redisPort,socket_connect_timeout=self.timeout)
 
     def runWithFallback(self,callback):
         while(True):
@@ -33,8 +34,8 @@ class DynoPythonDriver:
             except Exception as e:
                 print "Error: "
                 self.retryCount = self.retryCount + 1
-            if (self.retryCount<=self.MAX_RETRY):
-                self.seeds.pop
+            if (self.retryCount < self.MAX_RETRY):
+                self.seeds.pop(0)
                 time.sleep(1)
                 print "Retry... "
                 self.cnn  = self.connectRedis()
